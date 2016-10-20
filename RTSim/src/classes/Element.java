@@ -30,7 +30,7 @@ public class Element{
             case ElementTypeStreet:
                 return "<?>";
             default:
-                return "???";
+                return "   ";
         }
     }
     

@@ -5,6 +5,7 @@ public final class Street extends Element{
     // Properties
     private final int index;
     private final int speed;
+    private final int length;
     private final int beginX;
     private final int beginY;
     private final int endX;
@@ -26,22 +27,27 @@ public final class Street extends Element{
         this.endY = endY;
         
         if((this.beginX == this.endX && this.beginY == this.endY) || (this.beginX != this.endX && this.beginY != this.endY)){
+            this.length = 0;
             this.direction = Enumerators.StreetDirectionUnknown;
         }
         else{
             if(this.beginX == this.endX){
                 if(this.beginY < this.endY){
+                    this.length = this.endY - this.beginY;
                     this.direction = Enumerators.StreetDirectionEast;
                 }
                 else{ //rua indo para o oeste
+                    this.length = this.beginY - this.endY;
                     this.direction = Enumerators.StreetDirectionWest;
                 }
             }
             else{ //rua vertical
                 if(this.beginX < this.endX){
+                    this.length = this.endX - this.beginX;
                     this.direction = Enumerators.StreetDirectionSouth;
                 }
                 else{
+                    this.length = this.beginX - this.endX;
                     this.direction = Enumerators.StreetDirectionNorth;
                 }
             }

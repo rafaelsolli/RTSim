@@ -129,7 +129,13 @@ public class Map{
         temp += SingleLine;
         
         temp += "Dijkstra:" + LineBreak;
+        temp += "b\\e ";
+        for(int j = 0; j < intersectionTotal; j++){
+            temp += printInt(j, 3) + " ";
+        }
+        temp += LineBreak;
         for(int i = 0; i < intersectionTotal; i++){
+            temp += printInt(i, 3) + " ";
             for(int j = 0; j < intersectionTotal; j++){
                 temp += printInt(this.dijkstra[i][j], 3) + " ";
             }
