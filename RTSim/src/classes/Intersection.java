@@ -1,4 +1,5 @@
 package classes;
+import static global.Constants.LineBreak;
 import global.Enumerators;
 
 public final class Intersection extends Element{
@@ -25,7 +26,21 @@ public final class Intersection extends Element{
         return "XXX";
     }
     
-    // Getters and setters
-    // TODO
+    public String printMedium(){
+        return "Intersection [" + this.index + "] at (" + this.locationX + "," + this.locationY + ")" + LineBreak;
+    }
     
+    // Getters and setters
+    public int getIndex(){
+        return index;
+    }
+    
+    public int getLocationX(){
+        return locationX;
+    }
+
+    public int getLocationY(){
+        return locationY;
+    }
+
 }

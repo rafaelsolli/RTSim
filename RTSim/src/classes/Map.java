@@ -1,10 +1,10 @@
 package classes;
 import global.Enumerators;
-import static global.Util.printInt;
 import static global.Constants.InfiniteInt;
 import static global.Constants.LineBreak;
 import static global.Constants.SingleLine;
 import static global.Constants.DoubleLine;
+import static global.Util.printInt;
 
 public class Map{
     // Properties
@@ -146,14 +146,121 @@ public class Map{
         return temp;
     }
     
-    public boolean insertIntersection(){
-        // TODO - implementar a inserção de interseções
-        return false;
+    public String printBig(){
+        String temp = "";
+        
+        temp += "Map (" + this.timer + " seg):" + LineBreak;
+        temp += "x\\y ";
+        for(int j = 0; j < sizeY; j++){
+            temp += printInt(j, 3) + " ";
+        }
+        temp += LineBreak;
+        for(int i = 0; i < sizeX; i++){
+            temp += printInt(i, 3) + " ";
+            for(int j = 0; j < sizeY; j++){
+                temp += this.map[i][j].printSmall()+ " ";
+            }
+            temp += LineBreak;
+        }
+        temp += SingleLine;
+        
+        temp += "Intersections:" + LineBreak;
+        for(int i = 0; i < intersectionTotal; i++){
+            temp += printInt(i, 3) + " ";
+        }
+        temp += LineBreak;
+        for(int i = 0; i < intersectionTotal; i++){
+            temp += this.intersections[i].printSmall() + " ";
+        }
+        temp += LineBreak + LineBreak;
+        for(int i = 0; i < intersectionTotal; i++){
+            temp += this.intersections[i].printMedium();
+        }
+        temp += SingleLine;
+        
+        temp += "Streets:" + LineBreak;
+        for(int i = 0; i < streetTotal; i++){
+            temp += printInt(i, 3) + " ";
+        }
+        temp += LineBreak;
+        for(int i = 0; i < streetTotal; i++){
+            temp += this.streets[i].printSmall() + " ";
+        }
+        temp += LineBreak + LineBreak;
+        for(int i = 0; i < streetTotal; i++){
+            temp += this.streets[i].printMedium();
+        }
+        temp += SingleLine;
+        
+        temp += "Dijkstra:" + LineBreak;
+        temp += "b\\e ";
+        for(int j = 0; j < intersectionTotal; j++){
+            temp += printInt(j, 3) + " ";
+        }
+        temp += LineBreak;
+        for(int i = 0; i < intersectionTotal; i++){
+            temp += printInt(i, 3) + " ";
+            for(int j = 0; j < intersectionTotal; j++){
+                temp += printInt(this.dijkstra[i][j], 3) + " ";
+            }
+            temp += LineBreak;
+        }
+        temp += DoubleLine;
+        
+        return temp;
     }
     
-    public boolean insertStreet(){
-        // TODO - imlplementar a inserção de ruas
-        return false;
+    public void insertIntersection(int locationX, int locationY){
+        Intersection temp = new Intersection(this.intersectionCount, locationX, locationY);
+        
+        if(validateMap() && validateIntersection(temp)){
+            this.intersections[temp.getIndex()] = temp;
+            this.map[temp.getLocationX()][temp.getLocationY()] = temp;
+            
+            this.intersectionCount++;
+        }
+    }
+    
+    public void insertStreet(int speed, int beginX, int beginY, int endX, int endY, Sign sign){
+        Street temp = new Street(this.streetCount, speed, beginX, beginY, endX, endY, sign);
+        
+        if(validateMap() && validateStreet(temp)){
+            Intersection begin = (Intersection)this.map[beginX][beginY];
+            Intersection end = (Intersection)this.map[endX][endY];
+            
+            this.dijkstra[begin.getIndex()][end.getIndex()] = temp.getLength();
+            this.streets[temp.getIndex()] = temp;
+            switch(temp.getDirection()){
+                case StreetDirectionNorth:
+                    for(int i = beginX - 1; i > endX; i--){
+                        this.map[i][beginY] = temp;
+                        if((i == endX + 1) && (temp.getSign().getSignType() != Enumerators.SignTypeUnknown)) this.map[i][beginY] = temp.getSign();
+                    }
+                    break;
+                case StreetDirectionEast:
+                    for(int i = beginY + 1; i < endY; i++){
+                        this.map[beginX][i] = temp;
+                        if((i == endY - 1) && (temp.getSign().getSignType() != Enumerators.SignTypeUnknown)) this.map[beginX][i] = temp.getSign();
+                    }
+                    break;
+                case StreetDirectionSouth:
+                    for(int i = beginX + 1; i < endX; i++){
+                        this.map[i][beginY] = temp;
+                        if((i == endX - 1) && (temp.getSign().getSignType() != Enumerators.SignTypeUnknown)) this.map[i][beginY] = temp.getSign();
+                    }
+                    break;
+                case StreetDirectionWest:
+                    for(int i = beginY - 1; i > endY; i--){
+                        this.map[beginX][i] = temp;
+                        if((i == endY + 1) && (temp.getSign().getSignType() != Enumerators.SignTypeUnknown)) this.map[beginX][i] = temp.getSign();
+                    }
+                    break;
+                default:
+                    break;
+            }
+            
+            this.streetCount++;
+        }
     }
     
     public boolean validateMap(){
@@ -182,10 +289,6 @@ public class Map{
     // Getters and setters
     public Element getMapElement(int locationX, int locationY){
         return map[locationX][locationY];
-    }
-    
-    public void setMapElement(int locationX, int locationY, Element temp){
-        map[locationX][locationY] = temp;
     }
     
     public int[][] getDijkstra(){

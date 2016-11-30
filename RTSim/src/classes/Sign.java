@@ -29,6 +29,9 @@ public class Sign extends Element{
     }
     
     // Getters and setters
-    // TODO
+
+    public Enumerators getSignType(){
+        return signType;
+    }
     
 }
